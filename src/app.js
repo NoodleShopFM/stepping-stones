@@ -90,6 +90,78 @@
       elements.bridge.append(pair);
     }
   }
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const svgNode = (name, attrs, label) => {
+    const node = document.createElementNS(SVG_NS,name);
+    for(const [key,value] of Object.entries(attrs))node.setAttribute(key,String(value));
+    if(label!==undefined)node.textContent=label;
+    return node;
+  };
+  let luckRequest=0;
+  let lastLuckKey="";
+  async function renderLuck() {
+    const n=state.completed,observed=state.steps;
+    const placeholder=$("#luck-placeholder"),content=$("#luck-content");
+    if(n===0){
+      luckRequest++;
+      lastLuckKey="";
+      placeholder.hidden=false;
+      content.hidden=true;
+      return;
+    }
+    const key=`${n}:${observed}`;
+    if(key===lastLuckKey)return;
+    lastLuckKey=key;
+    const request=++luckRequest;
+    placeholder.hidden=false;
+    placeholder.textContent="Loading your luck distribution…";
+    content.hidden=true;
+    try{
+      const result=await globalThis.StonesLuck.calculate(n,observed);
+      if(request!==luckRequest)return;
+      const svg=$("#luck-plot");
+      svg.replaceChildren();
+      const {values,mean,sd}=result;
+      const left=43,right=580,top=13,bottom=180;
+      // Keep the observed marker visible even for very unusual outcomes.
+      const min=Math.max(0,Math.min(values[0].s,observed-1));
+      const max=Math.max(values[values.length-1].s,observed+1);
+      const span=Math.max(1,max-min);
+      const x=v=>left+(v-min)/span*(right-left);
+      const maxP=Math.max(...values.map(v=>v.pmf),1e-12);
+      const y=p=>bottom-p/maxP*(bottom-top);
+      const barWidth=Math.max(.6,Math.min(12,(right-left)/span*.88));
+      svg.append(svgNode("line",{x1:left,x2:right,y1:bottom,y2:bottom,stroke:"#9bb4bd","stroke-width":1}));
+      for(const item of values){
+        const height=bottom-y(item.pmf);
+        svg.append(svgNode("rect",{x:x(item.s)-barWidth/2,y:bottom-height,width:barWidth,height:Math.max(.3,height),rx:barWidth>3?1:0,fill:"#78b6dc"}));
+      }
+      const expectedX=x(mean),actualX=x(observed);
+      svg.append(svgNode("line",{x1:expectedX,x2:expectedX,y1:top,y2:bottom,stroke:"#246b91","stroke-width":1.5,"stroke-dasharray":"3 5",opacity:.7}));
+      svg.append(svgNode("line",{x1:actualX,x2:actualX,y1:top-5,y2:bottom+3,stroke:"#d67b27","stroke-width":2.5,"stroke-dasharray":"6 4"}));
+      const tickValues=[min,mean,max];
+      for(const value of tickValues){
+        const label=svgNode("text",{x:x(value),y:bottom+19,"text-anchor":value===min?"start":value===max?"end":"middle",fill:"#617f8a","font-size":12},Math.round(value).toLocaleString("en-US"));
+        svg.append(label);
+      }
+      const marker=svgNode("text",{x:Math.max(left+25,Math.min(right-25,actualX)),y:top-3,"text-anchor":"middle",fill:"#b5681f","font-size":13,"font-weight":800},fmt(observed));
+      svg.append(marker);
+      svg.setAttribute("aria-label",`After ${n} completed attempts, ${observed} steps observed versus ${mean.toFixed(1)} expected. ${result.label}, percentile ${(100*result.mid).toFixed(0)}.`);
+      $("#luck-rating").textContent=result.label;
+      $("#luck-percentile").textContent=`${result.approximate?"Approx. ":""}${Math.round(result.mid*100)}th percentile`;
+      $("#luck-observed").textContent=`${fmt(observed)} successful steps`;
+      $("#luck-expected").textContent=`${mean.toFixed(1)} expected after ${fmt(n)} runs`;
+      $("#luck-method").textContent=result.approximate?"Large-session approximation (over 630 runs)":"Precomputed exact distribution (stored Float32)";
+      placeholder.hidden=true;
+      content.hidden=false;
+    }catch(error){
+      if(request!==luckRequest)return;
+      console.warn("Could not render luck distribution:",error);
+      placeholder.textContent="Luck chart unavailable. Gameplay and rewards still work.";
+      content.hidden=true;
+      lastLuckKey="";
+    }
+  }
   function renderStats() {
     $("#hammers").textContent = fmt(state.bank.hammers);
     $("#coins").textContent = fmt(state.bank.coins);
@@ -154,6 +226,7 @@
     showBoard();
     renderMessage();
     renderStats();
+    void renderLuck();
   }
   elements.packs.addEventListener("click", (event) => {
     const button = event.target.closest("button");
