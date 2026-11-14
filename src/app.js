@@ -187,6 +187,10 @@
     save();
     replaying = true;
     renderControls();
+    elements.autoDescription.textContent = "Results in play order";
+    elements.autoStats.replaceChildren();
+    elements.dialog.hidden = false;
+    elements.autoClose.disabled = true;
     for (let i = 0; i < result.runs.length; i++) {
       const run = result.runs[i];
       const pseudoAttempt = {
@@ -197,25 +201,21 @@
       elements.progress.textContent = `Auto-play ${i + 1} / 20`;
       say(run.won ? "🎉 Full crossing!" : `${run.steps} successful steps`, "Simulating 20 independent attempts…");
       showBoard(pseudoAttempt, true);
-      await sleep(150);
-    }
-    replaying = false;
-    render();
-    elements.autoDescription.textContent = "Results in play order";
-    elements.autoStats.replaceChildren();
-    result.runs.forEach((run, index) => {
       const box = document.createElement("div");
       box.className = "auto-cell";
       if (run.steps === 8) box.classList.add("set-skin");
       else if (run.steps >= 6) box.classList.add("special");
       const number = document.createElement("span");
-      number.textContent = `${index + 1}.`;
+      number.textContent = `${i + 1}.`;
       const label = document.createElement("strong");
       label.textContent = resultLabel(run.steps);
       box.append(number, label);
       elements.autoStats.append(box);
-    });
-    elements.dialog.hidden = false;
+      await sleep(150);
+    }
+    replaying = false;
+    render();
+    elements.autoClose.disabled = false;
     elements.autoClose.focus();
   }
   elements.auto.addEventListener("click", autoPlay);
