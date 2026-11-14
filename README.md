@@ -16,6 +16,17 @@ Open `index.html` in a modern browser, or enable GitHub Pages in **Settings → 
 
 The chance of successfully crossing all eight pairs is `(1/2)^8 = 1/256`.
 
+## Precomputed probability engine
+
+Exact step-total distributions for **1–630 attempts** have been computed and validated offline, then stored as small static binary chunks in `data/`. These are not wired into the playable page yet.
+
+- [Mathematical model, storage format, validation results, and approximation benchmarks](docs/probability-engine.md)
+- Regenerate: `node scripts/generate_tables.mjs`
+- Validate: `node scripts/validate_tables.mjs`
+- Compare large-session approximations: `node scripts/benchmark_approximations.mjs`
+
+All three scripts use Node.js without external dependencies. Visitors won't run them.
+
 ## Roadmap
 
 - **Phase 2:** Replace placeholder graphics with faithful game visuals, animation, and camera behavior.
