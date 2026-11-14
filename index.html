@@ -46,6 +46,13 @@ button:disabled{opacity:.45;cursor:default}
 .action.secondary{background:#ecf6fb;color:#176587;border:1px solid #b3d9e7}
 .action.danger{background:#fff4f3;color:#b83e3a;border:1px solid #f0cbc9;padding:9px 12px;flex:initial;font-size:.82rem}
 .bank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.reward-header{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:8px;font-size:.79rem;color:#607d89;font-weight:750}
+.reward-cell{background:#f3f8fa;border-radius:11px;padding:13px;min-width:0}
+.reward-cell span{display:block;font-size:.78rem;color:#627e88;margin-bottom:3px}
+.reward-cell strong{font-size:clamp(1.1rem,4vw,1.45rem);overflow-wrap:anywhere}
+.reward-cell.probability{background:#eef7fc}
+.reward-cell.probability strong{color:#1b668b}
+.reward-cell.probability small{display:block;color:#6b8390;font-size:.68rem;margin-top:4px}
 .bank-item{background:#f3f8fa;border-radius:11px;padding:13px}
 .bank-item span{display:block;font-size:.78rem;color:#627e88;margin-bottom:3px}
 .bank-item strong{font-size:1.45rem}
@@ -90,6 +97,7 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
 </style>
 <script src="src/game-core.js" defer></script>
 <script src="src/luck.js" defer></script>
+<script src="src/reward-probabilities.js" defer></script>
 <script src="src/app.js" defer></script>
 </head>
 <body>
@@ -119,11 +127,16 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
 </section>
 <section class="panel" aria-label="Rewards">
   <div class="section-heading"><h2>🎁 Your Rewards</h2><span class="small">Accumulated winnings</span></div>
+  <div class="reward-header"><span>Rewards earned</span><span>Chance of being at least this lucky</span></div>
   <div class="bank-grid">
-    <div class="bank-item"><span>🔨 Hammers</span><strong id="hammers">0</strong></div>
-    <div class="bank-item"><span>🪙 Coins</span><strong id="coins">0</strong></div>
-    <div class="bank-item"><span>👑 +1% Skin</span><strong id="basic">0</strong></div>
-    <div class="bank-item"><span>💎 Set skins</span><strong id="set">0</strong></div>
+    <div class="reward-cell"><span>🔨 Hammers</span><strong id="hammers">0</strong></div>
+    <div class="reward-cell probability"><span>🔨 Hammers</span><strong id="hammers-chance">100%</strong></div>
+    <div class="reward-cell"><span>🪙 Coins</span><strong id="coins">0</strong></div>
+    <div class="reward-cell probability"><span>🪙 Coins</span><strong id="coins-chance">100%</strong></div>
+    <div class="reward-cell"><span>👑 +1% Skin</span><strong id="basic">0</strong></div>
+    <div class="reward-cell probability"><span>👑 +1% Skin</span><strong id="basic-chance">100%</strong></div>
+    <div class="reward-cell"><span>💎 Set skins</span><strong id="set">0</strong></div>
+    <div class="reward-cell probability"><span>💎 Set skins</span><strong id="set-chance">100%</strong></div>
   </div>
   <div class="bank-footer">
     <div class="small"><span id="bank-attempts">0 tokens used</span><br><span id="bank-steps">Average steps per token: 0.00</span><br><span id="estimated-spending">Estimated spending: $0.00</span></div>
@@ -132,10 +145,10 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
   <p class="spending-note">Spending assumes every token costs $99/630 tokens ≈ $0.1571 per token.</p>
 </section>
 <section class="panel" aria-label="Luck dashboard">
-  <div class="section-heading"><h2>🍀 How lucky are you?</h2><span class="small">Total successful steps</span></div>
+  <div class="section-heading"><h2>📊 Total Successful Steps</h2><span class="small">Total successful steps</span></div>
   <div id="luck-placeholder" class="luck-placeholder">Play a few rounds to see how your luck compares.</div>
   <div id="luck-content" hidden>
-    <div class="luck-head"><strong id="luck-rating" class="luck-label">Average luck</strong><span id="luck-percentile" class="luck-percentile small"></span></div>
+    
     <svg id="luck-plot" class="luck-plot" viewBox="0 0 600 220" role="img" aria-label="Theoretical distribution of cumulative successful steps, with observed total marked"></svg>
     <div class="luck-legend"><span><span class="luck-key"></span>Expected distribution</span><span><span class="luck-key actual"></span>Your result</span></div>
     <div class="luck-meta"><span id="luck-observed"></span><span id="luck-expected"></span></div>
