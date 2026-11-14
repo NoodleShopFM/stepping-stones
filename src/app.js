@@ -6,6 +6,8 @@
   const $ = (selector) => document.querySelector(selector);
   const fmt = (value) => Number(value).toLocaleString("en-US");
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const usd = (tokens) => (tokens * 99 / 630).toLocaleString("en-US", {style:"currency",currency:"USD"});
+  const resultLabel = (steps) => steps === 8 ? "Set Skin" : steps >= 6 ? "+1% Skin" : `Tile ${steps}`;
   const elements = {
     world: $("#world"), bridge: $("#bridge"), message: $("#message"),
     progress: $("#progress"), runCounter: $("#run-counter"),
@@ -93,12 +95,13 @@
     $("#coins").textContent = fmt(state.bank.coins);
     $("#basic").textContent = fmt(state.bank.basic);
     $("#set").textContent = fmt(state.bank.set);
-    $("#bank-attempts").textContent = `${fmt(state.completed)} attempts completed`;
-    $("#bank-steps").textContent = `${fmt(state.steps)} successful steps`;
+    $("#bank-attempts").textContent = `${fmt(state.spent)} tokens used`;
+    $("#bank-steps").textContent = `Average steps per token: ${state.completed ? (state.steps/state.completed).toFixed(2) : "0.00"}`;
+    $("#estimated-spending").textContent = `Estimated spending: ${usd(state.spent)}`;
     $("#total-spent").textContent = fmt(state.spent);
-    $("#total-steps").textContent = fmt(state.steps);
+    $("#total-steps").textContent = state.completed ? (state.steps / state.completed).toFixed(2) : "0.00";
     $("#total-wins").textContent = fmt(state.outcomeCounts[8]);
-    elements.runCounter.textContent = `${fmt(state.completed)} completed`;
+    elements.runCounter.textContent = `${fmt(state.spent)} tokens used`;
     const peak = Math.max(1, ...state.outcomeCounts);
     elements.histogram.replaceChildren();
     state.outcomeCounts.forEach((count, step) => {
@@ -119,7 +122,7 @@
     });
   }
   function renderControls() {
-    elements.walletLabel.textContent = state.unlimited ? "Unlimited mode · tokens spent" : "Available tokens";
+    elements.walletLabel.textContent = state.unlimited ? "Unlimited mode · tokens used" : "Remaining tokens";
     elements.wallet.textContent = fmt(state.unlimited ? state.spent : state.wallet);
     const locked = replaying || state.current.status === "active";
     for (const pack of elements.packs.querySelectorAll("button")) {
@@ -198,24 +201,20 @@
     }
     replaying = false;
     render();
-    elements.autoDescription.textContent = `20 tokens spent · ${result.wins} full crossing${result.wins === 1 ? "" : "s"}`;
+    elements.autoDescription.textContent = "Results in play order";
     elements.autoStats.replaceChildren();
-    for (const [name,value] of [
-      ["Successful steps",result.steps],
-      ["Hammers",result.reward.hammers],
-      ["Coins",result.reward.coins],
-      ["Basic head skins",result.reward.basic],
-      ["Set skins",result.reward.set]
-    ]) {
+    result.runs.forEach((run, index) => {
       const box = document.createElement("div");
       box.className = "auto-cell";
-      const strong = document.createElement("strong");
-      strong.textContent = fmt(value);
-      const label = document.createElement("span");
-      label.textContent = name;
-      box.append(strong,label);
+      if (run.steps === 8) box.classList.add("set-skin");
+      else if (run.steps >= 6) box.classList.add("special");
+      const number = document.createElement("span");
+      number.textContent = `${index + 1}.`;
+      const label = document.createElement("strong");
+      label.textContent = resultLabel(run.steps);
+      box.append(number, label);
       elements.autoStats.append(box);
-    }
+    });
     elements.dialog.hidden = false;
     elements.autoClose.focus();
   }
