@@ -65,12 +65,19 @@
         } else if (!isReplay && attempt.status === "ready" && core.canStart(state) && i === 0) {
           button.classList.add("current");
         }
-        button.disabled = isReplay || replaying || !core.canStart(state) && attempt.status === "ready"
-          || attempt.status !== "active" && attempt.status !== "ready" || i !== attempt.step;
-        // Prevent a final-tile click from bubbling into the click-to-restart surface.
+        const finished = attempt.status === "won" || attempt.status === "lost";
+        button.disabled = isReplay || replaying || (finished && !core.canStart(state))
+          || (!finished && (attempt.status !== "ready" && attempt.status !== "active"
+          || !core.canStart(state) && attempt.status === "ready" || i !== attempt.step));
+        // All stones are clickable for restart after a finished attempt.
+        // Stop propagation so the final click cannot trigger an immediate restart.
         button.addEventListener("click", (event) => {
           event.stopPropagation();
           if (replaying) return;
+          if (finished) {
+            if (core.restart(state)) { save(); render(); }
+            return;
+          }
           const result = core.choose(state, i, side);
           if (!result.ok) return;
           save();
