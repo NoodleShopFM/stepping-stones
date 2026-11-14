@@ -146,9 +146,9 @@
       }
       const marker=svgNode("text",{x:Math.max(left+25,Math.min(right-25,actualX)),y:top-3,"text-anchor":"middle",fill:"#b5681f","font-size":13,"font-weight":800},fmt(observed));
       svg.append(marker);
-      svg.setAttribute("aria-label",`After ${n} completed attempts, ${observed} steps observed versus ${mean.toFixed(1)} expected. ${result.label}, percentile ${(100*result.mid).toFixed(0)}.`);
-      $("#luck-rating").textContent=result.label;
-      $("#luck-percentile").textContent=`${result.approximate?"Approx. ":""}${Math.round(result.mid*100)}th percentile`;
+      svg.setAttribute("aria-label",`After ${n} completed attempts, ${observed} steps observed versus ${mean.toFixed(1)} expected..`);
+  
+
       $("#luck-observed").textContent=`${fmt(observed)} successful steps`;
       $("#luck-expected").textContent=`${mean.toFixed(1)} expected after ${fmt(n)} runs`;
       $("#luck-method").textContent=result.approximate?"Large-session approximation (over 630 runs)":"Precomputed exact distribution (stored Float32)";
@@ -161,6 +161,31 @@
       content.hidden=true;
       lastLuckKey="";
     }
+  }
+  let rewardRequest=0;
+  let lastRewardKey="";
+  async function renderRewardChances(){
+    const n=state.completed;
+    const key=`${n}:${state.bank.hammers}:${state.bank.coins}:${state.bank.basic}:${state.bank.set}`;
+    if(key===lastRewardKey)return;
+    lastRewardKey=key;
+    const request=++rewardRequest;
+    const metrics=["hammers","coins","basic","set"];
+    if(n===0){
+      for(const metric of metrics)$("#"+metric+"-chance").textContent="100%";
+      return;
+    }
+    for(const metric of metrics)$("#"+metric+"-chance").textContent="…";
+    const results=await Promise.all(metrics.map(async metric=>{
+      try{return await globalThis.StonesRewards.tail(metric,n,state.bank[metric]);}
+      catch(error){console.warn("Reward probability unavailable:",metric,error);return null;}
+    }));
+    if(request!==rewardRequest)return;
+    results.forEach((result,i)=>{
+      const el=$("#"+metrics[i]+"-chance");
+      el.textContent=result?globalThis.StonesRewards.formatPercent(result.probability):"—";
+      el.title=result?.approximate?"Approximate tail probability":"Probability of matching or exceeding this reward";
+    });
   }
   function renderStats() {
     $("#hammers").textContent = fmt(state.bank.hammers);
@@ -226,6 +251,7 @@
     showBoard();
     renderMessage();
     renderStats();
+    void renderRewardChances();
     void renderLuck();
   }
   elements.packs.addEventListener("click", (event) => {
