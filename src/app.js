@@ -189,6 +189,19 @@
     renderControls();
     elements.autoDescription.textContent = "Results in play order";
     elements.autoStats.replaceChildren();
+    // Reserve all 20 slots before animation to prevent the modal resizing.
+    const resultRows = Array.from({length: 20}, (_, index) => {
+      const box = document.createElement("div");
+      box.className = "auto-cell";
+      box.setAttribute("aria-label", `Run ${index + 1}: pending`);
+      const number = document.createElement("span");
+      number.textContent = `${index + 1}.`;
+      const label = document.createElement("strong");
+      label.textContent = "—";
+      box.append(number, label);
+      elements.autoStats.append(box);
+      return {box, label};
+    });
     elements.dialog.hidden = false;
     elements.autoClose.disabled = true;
     for (let i = 0; i < result.runs.length; i++) {
@@ -201,16 +214,11 @@
       elements.progress.textContent = `Auto-play ${i + 1} / 20`;
       say(run.won ? "🎉 Full crossing!" : `${run.steps} successful steps`, "Simulating 20 independent attempts…");
       showBoard(pseudoAttempt, true);
-      const box = document.createElement("div");
-      box.className = "auto-cell";
+      const {box, label} = resultRows[i];
+      label.textContent = resultLabel(run.steps);
+      box.setAttribute("aria-label", `Run ${i + 1}: ${label.textContent}`);
       if (run.steps === 8) box.classList.add("set-skin");
       else if (run.steps >= 6) box.classList.add("special");
-      const number = document.createElement("span");
-      number.textContent = `${i + 1}.`;
-      const label = document.createElement("strong");
-      label.textContent = resultLabel(run.steps);
-      box.append(number, label);
-      elements.autoStats.append(box);
       await sleep(150);
     }
     replaying = false;
