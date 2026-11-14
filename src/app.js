@@ -292,7 +292,7 @@
       box.setAttribute("aria-label", `Run ${i + 1}: ${label.textContent}`);
       if (run.steps === 8) box.classList.add("set-skin");
       else if (run.steps >= 6) box.classList.add("special");
-      await sleep(150);
+      await sleep(80);
     }
     replaying = false;
     render();
