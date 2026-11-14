@@ -25,7 +25,7 @@ The chance of successfully crossing all eight pairs is `(1/2)^8 = 1/256`.
 
 ## Precomputed probability engine
 
-Exact step-total distributions for **1–630 attempts** have been computed and validated offline, then stored as small static binary chunks in `data/`. The tables are available for the upcoming luck-distribution visualizations; they are not yet loaded by the playable page.
+Exact step-total distributions for **1–630 attempts** have been computed and validated offline, then stored as small static binary chunks in `data/`. The cumulative successful-step luck chart loads only the relevant binary chunk and plots the theoretical distribution with the player's observed total. It uses a mid-distribution percentile for discrete outcomes and the five agreed luck categories. Sessions above 630 completed attempts use a second-order Edgeworth approximation; its extreme tails are not guaranteed to be accurate.
 
 - [Mathematical model, storage format, validation results, and approximation benchmarks](docs/probability-engine.md)
 - Regenerate: `node scripts/generate_tables.mjs`
@@ -37,7 +37,7 @@ All three scripts use Node.js without external dependencies. Visitors won't run 
 ## Roadmap
 
 - **Phase 2:** Replace placeholder graphics with faithful game visuals, animation, and camera behavior.
-- **Next Phase 1 milestone:** Integrate theoretical luck distributions, percentile displays, and skin PMFs using the offline tables.\n- **Phase 3:** Add additional analytics, configuration, and other enhancements.
+- **Next Phase 1 milestone:** Review the cumulative-step plot and add +1% Skin and Set Skin probability distributions if the visual design works.\n- **Phase 3:** Add additional analytics, configuration, and other enhancements.
 
 ## Disclaimer
 
@@ -48,7 +48,7 @@ A license for this project's original code has not yet been selected. Any future
 ## Tests
 
 ```sh
-node --test tests/game-core.test.cjs
+node --test tests/*.test.cjs
 node scripts/validate_tables.mjs
 ```
 
