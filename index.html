@@ -3,134 +3,142 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#7adff2">
-<title>Stepping Stones — Forge Master Fan Simulator</title>
+<meta name="theme-color" content="#e3f9ff">
+<title>Stepping Stones • NoodleShopFM</title>
 <style>
-:root {font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#173742;background:#dff8ff}
-* {box-sizing:border-box}
-body {margin:0;min-height:100svh;display:grid;place-items:center;padding:16px}
-main {width:min(100%,520px);padding:clamp(14px,4vw,24px);background:#fff;border-radius:24px;box-shadow:0 12px 44px #14526924}
-h1 {font-size:clamp(1.55rem,6vw,2rem);margin:0 0 3px}
-.sub {margin:0 0 20px;color:#607d89}
-.stats {display:flex;justify-content:space-between;gap:8px;font-weight:750;margin:0 0 13px}
-.world {border-radius:16px;overflow:hidden;background:linear-gradient(#80dff4,#baf2fa);padding:24px 10px;min-height:240px;display:flex;align-items:center;justify-content:center}
-.bridge {width:100%;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(2px,1vw,7px)}
-.pair {display:flex;min-width:0;flex-direction:column;gap:11px}
-.stone {min-width:0;width:100%;aspect-ratio:1 / 1.05;border:2px solid #3094a3;border-radius:9px;box-shadow:0 5px 0 #238d9a;background:#64d3db;display:grid;place-items:center;padding:0;cursor:pointer;touch-action:manipulation;transition:background .16s,transform .16s,opacity .16s}
-.stone:disabled {cursor:default}
-.stone.current {background:#25d47c;border-color:#128451;box-shadow:0 5px 0 #0f7451}
-.stone.current:focus-visible {outline:3px solid #fff;outline-offset:3px}
-.stone.safe {background:#13bf71;border-color:#13844d;box-shadow:0 5px 0 #16764b}
-.stone.broken {background:#e45f5b;border-color:#ac3839;box-shadow:none;transform:rotate(-14deg) scale(.77);opacity:.7}
-.stone:enabled:active {transform:translateY(4px)}
-.stone .mark {font-size:clamp(10px,3vw,19px);font-weight:850;color:white}
-.player {display:inline-block;font-size:clamp(12px,3.2vw,18px);line-height:1}
-.message {margin:17px 0 14px;min-height:65px}
-.message strong {display:block;font-size:1.03rem;margin-bottom:4px}
-.message span {color:#587884;font-size:.91rem;line-height:1.4}
-.reset {border:0;background:#157ab8;border-radius:12px;padding:14px;color:#fff;font-size:1rem;font-weight:750;width:100%;cursor:pointer}
-.reset:hover {background:#086a9f}
-.note {text-align:center;color:#66838c;font-size:.8rem;margin:13px 0 0}
-@media (max-width:390px) {.world{padding:16px 6px;min-height:210px}.stone{border-radius:5px;border-width:1.5px}.pair{gap:8px}}
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1a3e4b;background:#e4f7fc;font-variant-numeric:tabular-nums}
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(10px,2.5vw,25px);min-height:100svh}
+main{max-width:670px;margin:auto;display:grid;gap:14px;padding-bottom:22px}
+header{text-align:center;padding-top:6px}
+h1{font-size:clamp(1.6rem,5vw,2.15rem);margin:0 0 2px}
+header p{color:#647b84;font-size:.87rem;margin:0}
+.panel{background:#fff;border-radius:20px;padding:clamp(14px,3.5vw,22px);box-shadow:0 5px 25px #0f516214}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.section-heading h2{font-size:1.11rem;margin:0}
+.small{color:#69838d;font-size:.79rem}
+.packs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+button{font:inherit;touch-action:manipulation;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+.pack{padding:12px 3px;border-radius:11px;background:#eff9fc;border:1.5px solid #bcdfeb;color:#18526c;font-weight:800}
+.pack.active{background:#156f9e;color:#fff;border-color:#156f9e}
+.pack:not(:disabled):active,.action:not(:disabled):active{transform:translateY(1px)}
+.wallet{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f3fafc;border-radius:12px;margin-top:12px;padding:12px}
+.wallet strong{font-size:1.13rem}
+.game-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;font-weight:750;font-size:.91rem}
+.world{border-radius:15px;overflow:hidden;background:linear-gradient(#83def0,#b7f1f9);min-height:clamp(195px,35vw,260px);display:flex;align-items:center;justify-content:center;padding:clamp(11px,2.8vw,24px) 9px;position:relative}
+.bridge{width:100%;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(3px,1.1vw,8px)}
+.pair{min-width:0;display:flex;flex-direction:column;gap:clamp(8px,2.8vw,17px)}
+.stone{width:100%;min-width:0;aspect-ratio:1/1.04;border:1.5px solid #2892a4;box-shadow:0 5px 0 #288d9a;border-radius:clamp(4px,1.6vw,11px);background:#65cfd8;display:grid;place-items:center;color:#fff;font-size:clamp(12px,2.8vw,21px);font-weight:850;padding:0;transition:background .13s,opacity .13s,transform .13s}
+.stone:disabled{opacity:1}
+.stone.current{background:#27d182;border-color:#168654;box-shadow:0 5px 0 #167b52}
+.stone.safe{background:#18c878;border-color:#158e57;box-shadow:0 5px 0 #178557}
+.stone.failed{background:#ed6964;border-color:#ae3d40;box-shadow:none;transform:rotate(-12deg) scale(.82)}
+.stone:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.stone .foot{font-size:clamp(11px,2.3vw,18px)}
+.world.finished{cursor:pointer}
+.world.finished:focus-visible{outline:3px solid #156f9e;outline-offset:3px}
+.message{text-align:center;min-height:65px;padding:14px 0 7px}
+.message strong{display:block;font-size:1.04rem}
+.message span{display:block;color:#5f7d87;font-size:.86rem;margin-top:4px}
+.actions{display:flex;gap:9px}
+.action{flex:1;border:0;border-radius:12px;padding:13px;background:#1879ab;color:#fff;font-weight:800}
+.action.secondary{background:#ecf6fb;color:#176587;border:1px solid #b3d9e7}
+.action.danger{background:#fff4f3;color:#b83e3a;border:1px solid #f0cbc9;padding:9px 12px;flex:initial;font-size:.82rem}
+.bank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.bank-item{background:#f3f8fa;border-radius:11px;padding:13px}
+.bank-item span{display:block;font-size:.78rem;color:#627e88;margin-bottom:3px}
+.bank-item strong{font-size:1.45rem}
+.bank-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #edf2f4;margin-top:14px;padding-top:12px}
+.bank-footer .small{line-height:1.6}
+.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:#f3f8fa;padding:12px 7px;border-radius:11px;text-align:center}
+.stat strong{display:block;font-size:1.25rem}
+.stat span{font-size:.75rem;color:#68818b}
+.histogram{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;align-items:end;height:100px;margin-top:14px}
+.hist-col{display:flex;flex-direction:column;align-items:center;justify-content:end;gap:4px;height:100%;min-width:0}
+.hist-count{font-size:.7rem;color:#607c86}
+.hist-bar{background:#6db5dd;border-radius:4px 4px 0 0;width:100%;min-height:2px}
+.hist-label{font-size:.73rem;font-weight:650}
+.overlay{position:fixed;inset:0;background:#103e4b99;display:grid;place-items:center;padding:16px;z-index:5}
+.dialog{background:#fff;border-radius:19px;padding:23px;width:min(100%,420px);box-shadow:0 12px 55px #0b344b3d}
+.dialog h2{margin:0 0 8px;font-size:1.3rem}
+.dialog p{line-height:1.5;color:#53727f}
+.dialog .actions{margin-top:18px}
+.auto-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.auto-cell{background:#f2f8fa;padding:11px;border-radius:10px}
+.auto-cell strong{display:block;font-size:1.2rem}
+.auto-cell span{font-size:.76rem;color:#657e87}
+.hint{margin:8px 0 0;text-align:center;color:#7b9199;font-size:.76rem}
+footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
+[hidden]{display:none!important}
+@media(max-width:410px){.panel{padding:13px}.bank-item{padding:11px}.pack{padding:11px 2px}.world{padding:12px 5px;min-height:190px}.pair{gap:9px}.bank-footer{align-items:flex-start}.bank-footer .small{font-size:.72rem}}
+@media(prefers-reduced-motion:reduce){.stone{transition:none}}
 </style>
+<script src="src/game-core.js" defer></script>
+<script src="src/app.js" defer></script>
 </head>
 <body>
 <main>
-  <h1>Stepping Stones</h1>
-  <p class="sub">Phase 1 · Functional prototype</p>
-  <div class="stats"><span id="progress">0 / 8 crossed</span><span id="attempts">Attempt 1</span></div>
-  <div class="world"><div class="bridge" id="bridge" aria-label="Eight pairs of stepping stones">
-    <noscript>This simulator needs JavaScript enabled to play.</noscript>
-  </div></div>
-  <div class="message" id="message" aria-live="polite"><strong>Choose your first stone</strong><span>Each choice has a 50% chance of breaking.</span></div>
-  <button class="reset" id="restart" type="button">Restart</button>
-  <p class="note">Probability of crossing all eight: 1 in 256</p>
+<header><h1>Stepping Stones</h1><p>A remarkably rigorous way to fall into the void</p></header>
+<section class="panel" aria-label="Tokens">
+  <div class="section-heading"><h2>🎟️ Tokens</h2><span class="small">Choose a pack or unlimited play</span></div>
+  <div class="packs" id="packs">
+    <button type="button" class="pack" data-pack="8">+8</button>
+    <button type="button" class="pack" data-pack="42">+42</button>
+    <button type="button" class="pack" data-pack="150">+150</button>
+    <button type="button" class="pack" data-pack="630">+630</button>
+    <button type="button" class="pack" data-infinite="true" aria-pressed="false">∞</button>
+  </div>
+  <div class="wallet"><span id="wallet-label">Available tokens</span><strong id="wallet">0</strong></div>
+</section>
+<section class="panel" aria-label="Game">
+  <div class="game-top"><span id="progress">0 / 8 steps</span><span id="run-counter">0 attempts completed</span></div>
+  <div id="world" class="world" role="group" aria-label="Stepping Stones board">
+    <div id="bridge" class="bridge" aria-label="Two rows of eight stones"></div>
+  </div>
+  <div id="message" class="message" aria-live="polite"><strong>Choose a token pack to begin.</strong></div>
+  <div class="actions">
+    <button id="auto" class="action" type="button">▶ Auto ×20</button>
+  </div>
+  <p class="hint">Each attempt costs one token. All rewards are cumulative.</p>
+</section>
+<section class="panel" aria-label="Bank">
+  <div class="section-heading"><h2>🏦 Your Bank</h2><span class="small">Accumulated winnings</span></div>
+  <div class="bank-grid">
+    <div class="bank-item"><span>🔨 Hammers</span><strong id="hammers">0</strong></div>
+    <div class="bank-item"><span>🪙 Coins</span><strong id="coins">0</strong></div>
+    <div class="bank-item"><span>👑 Basic head skins</span><strong id="basic">0</strong></div>
+    <div class="bank-item"><span>💎 Set skins</span><strong id="set">0</strong></div>
+  </div>
+  <div class="bank-footer">
+    <div class="small"><span id="bank-attempts">0 attempts completed</span><br><span id="bank-steps">0 successful steps</span></div>
+    <button id="reset-all" type="button" class="action danger">Reset All</button>
+  </div>
+</section>
+<section class="panel" aria-label="Statistics">
+  <div class="section-heading"><h2>📊 Run statistics</h2><span class="small">Lifetime record</span></div>
+  <div class="stats-grid">
+    <div class="stat"><strong id="total-spent">0</strong><span>Tokens spent</span></div>
+    <div class="stat"><strong id="total-steps">0</strong><span>Successful steps</span></div>
+    <div class="stat"><strong id="total-wins">0</strong><span>8-step wins</span></div>
+  </div>
+  <div class="small" style="margin-top:15px">How far did your attempts get?</div>
+  <div id="histogram" class="histogram" aria-label="Attempts by number of successful steps"></div>
+  <div class="hint">Exact luck percentiles and distributions are coming in the next update.</div>
+</section>
+<footer>Unofficial Forge Master fan simulator · NoodleShopFM</footer>
 </main>
+<div id="auto-dialog" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="auto-title">
+  <div class="dialog">
+    <h2 id="auto-title">20-run summary</h2>
+    <p id="auto-description"></p>
+    <div class="auto-grid" id="auto-stats"></div>
+    <div class="actions"><button type="button" class="action" id="auto-close">Continue</button></div>
+  </div>
+</div>
 <script>
-(() => {
-  "use strict";
-  const TOTAL = 8;
-  const bridge = document.querySelector("#bridge");
-  const progress = document.querySelector("#progress");
-  const attempts = document.querySelector("#attempts");
-  const message = document.querySelector("#message");
-  const restart = document.querySelector("#restart");
-
-  let attempt = 1;
-  let game;
-
-  function start() {
-    game = { step: 0, status: "playing", choices: [] };
-    render();
-  }
-
-  function choose(step, side) {
-    if (game.status !== "playing" || step !== game.step) return;
-    const safe = Math.random() < 0.5;
-    game.choices.push({ side, safe });
-    if (safe) {
-      game.step += 1;
-      if (game.step === TOTAL) game.status = "won";
-    } else {
-      game.status = "lost";
-    }
-    render();
-  }
-
-  function render() {
-    bridge.replaceChildren();
-    for (let i = 0; i < TOTAL; i += 1) {
-      const pair = document.createElement("div");
-      pair.className = "pair";
-      const result = game.choices[i];
-
-      for (const side of ["top", "bottom"]) {
-        const tile = document.createElement("button");
-        tile.type = "button";
-        tile.className = "stone";
-        tile.setAttribute("aria-label", `Step ${i + 1}, ${side} stone`);
-        const selected = result?.side === side;
-        if (result) {
-          // The unchosen tile in a pair is shown as safe after a choice.
-          tile.classList.add(selected && !result.safe ? "broken" : "safe");
-          if (selected) {
-            const mark = document.createElement("span");
-            mark.className = "mark";
-            mark.textContent = result.safe ? "✓" : "✕";
-            tile.append(mark);
-            if (result.safe) {
-              const player = document.createElement("span");
-              player.className = "player";
-              player.setAttribute("aria-label", "Crossed");
-              player.textContent = "👣";
-              // Keep player marker on the most recent successful tile.
-              if (i === game.step - 1) tile.replaceChildren(player);
-            }
-          }
-        } else if (i === game.step && game.status === "playing") {
-          tile.classList.add("current");
-        }
-        tile.disabled = game.status !== "playing" || i !== game.step;
-        tile.addEventListener("click", () => choose(i, side));
-        pair.append(tile);
-      }
-      bridge.append(pair);
-    }
-
-    progress.textContent = `${game.step} / ${TOTAL} crossed`;
-    attempts.textContent = `Attempt ${attempt}`;
-    if (game.status === "won") {
-      message.innerHTML = "<strong>🎉 You made it!</strong><span>Eight successful crossings! That's a 1-in-256 run.</span>";
-    } else if (game.status === "lost") {
-      message.innerHTML = `<strong>💥 The stone broke!</strong><span>You crossed ${game.step} ${game.step === 1 ? "pair" : "pairs"} before falling.</span>`;
-    } else {
-      message.innerHTML = `<strong>${game.step === 0 ? "Choose your first stone" : `Nice! Choose pair ${game.step + 1}.`}</strong><span>Tap the upper or lower highlighted stone.</span>`;
-    }
-  }
-
-  restart.addEventListener("click", () => { attempt += 1; start(); });
-  start();
-})();
+/* Static HTML placeholders intentionally kept minimal; gameplay initializes in src/app.js. */
 </script>
 </body>
 </html>
