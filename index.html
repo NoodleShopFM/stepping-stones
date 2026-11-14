@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7adff2">
+<title>Stepping Stones — Forge Master Fan Simulator</title>
+<style>
+:root {font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#173742;background:#dff8ff}
+* {box-sizing:border-box}
+body {margin:0;min-height:100svh;display:grid;place-items:center;padding:16px}
+main {width:min(100%,520px);padding:clamp(14px,4vw,24px);background:#fff;border-radius:24px;box-shadow:0 12px 44px #14526924}
+h1 {font-size:clamp(1.55rem,6vw,2rem);margin:0 0 3px}
+.sub {margin:0 0 20px;color:#607d89}
+.stats {display:flex;justify-content:space-between;gap:8px;font-weight:750;margin:0 0 13px}
+.world {border-radius:16px;overflow:hidden;background:linear-gradient(#80dff4,#baf2fa);padding:24px 10px;min-height:240px;display:flex;align-items:center;justify-content:center}
+.bridge {width:100%;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(2px,1vw,7px)}
+.pair {display:flex;min-width:0;flex-direction:column;gap:11px}
+.stone {min-width:0;width:100%;aspect-ratio:1 / 1.05;border:2px solid #3094a3;border-radius:9px;box-shadow:0 5px 0 #238d9a;background:#64d3db;display:grid;place-items:center;padding:0;cursor:pointer;touch-action:manipulation;transition:background .16s,transform .16s,opacity .16s}
+.stone:disabled {cursor:default}
+.stone.current {background:#25d47c;border-color:#128451;box-shadow:0 5px 0 #0f7451}
+.stone.current:focus-visible {outline:3px solid #fff;outline-offset:3px}
+.stone.safe {background:#13bf71;border-color:#13844d;box-shadow:0 5px 0 #16764b}
+.stone.broken {background:#e45f5b;border-color:#ac3839;box-shadow:none;transform:rotate(-14deg) scale(.77);opacity:.7}
+.stone:enabled:active {transform:translateY(4px)}
+.stone .mark {font-size:clamp(10px,3vw,19px);font-weight:850;color:white}
+.player {display:inline-block;font-size:clamp(12px,3.2vw,18px);line-height:1}
+.message {margin:17px 0 14px;min-height:65px}
+.message strong {display:block;font-size:1.03rem;margin-bottom:4px}
+.message span {color:#587884;font-size:.91rem;line-height:1.4}
+.reset {border:0;background:#157ab8;border-radius:12px;padding:14px;color:#fff;font-size:1rem;font-weight:750;width:100%;cursor:pointer}
+.reset:hover {background:#086a9f}
+.note {text-align:center;color:#66838c;font-size:.8rem;margin:13px 0 0}
+@media (max-width:390px) {.world{padding:16px 6px;min-height:210px}.stone{border-radius:5px;border-width:1.5px}.pair{gap:8px}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Stepping Stones</h1>
+  <p class="sub">Phase 1 · Functional prototype</p>
+  <div class="stats"><span id="progress">0 / 8 crossed</span><span id="attempts">Attempt 1</span></div>
+  <div class="world"><div class="bridge" id="bridge" aria-label="Eight pairs of stepping stones">
+    <noscript>This simulator needs JavaScript enabled to play.</noscript>
+  </div></div>
+  <div class="message" id="message" aria-live="polite"><strong>Choose your first stone</strong><span>Each choice has a 50% chance of breaking.</span></div>
+  <button class="reset" id="restart" type="button">Restart</button>
+  <p class="note">Probability of crossing all eight: 1 in 256</p>
+</main>
+<script>
+(() => {
+  "use strict";
+  const TOTAL = 8;
+  const bridge = document.querySelector("#bridge");
+  const progress = document.querySelector("#progress");
+  const attempts = document.querySelector("#attempts");
+  const message = document.querySelector("#message");
+  const restart = document.querySelector("#restart");
+
+  let attempt = 1;
+  let game;
+
+  function start() {
+    game = { step: 0, status: "playing", choices: [] };
+    render();
+  }
+
+  function choose(step, side) {
+    if (game.status !== "playing" || step !== game.step) return;
+    const safe = Math.random() < 0.5;
+    game.choices.push({ side, safe });
+    if (safe) {
+      game.step += 1;
+      if (game.step === TOTAL) game.status = "won";
+    } else {
+      game.status = "lost";
+    }
+    render();
+  }
+
+  function render() {
+    bridge.replaceChildren();
+    for (let i = 0; i < TOTAL; i += 1) {
+      const pair = document.createElement("div");
+      pair.className = "pair";
+      const result = game.choices[i];
+
+      for (const side of ["top", "bottom"]) {
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "stone";
+        tile.setAttribute("aria-label", `Step ${i + 1}, ${side} stone`);
+        const selected = result?.side === side;
+        if (result) {
+          // The unchosen tile in a pair is shown as safe after a choice.
+          tile.classList.add(selected && !result.safe ? "broken" : "safe");
+          if (selected) {
+            const mark = document.createElement("span");
+            mark.className = "mark";
+            mark.textContent = result.safe ? "✓" : "✕";
+            tile.append(mark);
+            if (result.safe) {
+              const player = document.createElement("span");
+              player.className = "player";
+              player.setAttribute("aria-label", "Crossed");
+              player.textContent = "👣";
+              // Keep player marker on the most recent successful tile.
+              if (i === game.step - 1) tile.replaceChildren(player);
+            }
+          }
+        } else if (i === game.step && game.status === "playing") {
+          tile.classList.add("current");
+        }
+        tile.disabled = game.status !== "playing" || i !== game.step;
+        tile.addEventListener("click", () => choose(i, side));
+        pair.append(tile);
+      }
+      bridge.append(pair);
+    }
+
+    progress.textContent = `${game.step} / ${TOTAL} crossed`;
+    attempts.textContent = `Attempt ${attempt}`;
+    if (game.status === "won") {
+      message.innerHTML = "<strong>🎉 You made it!</strong><span>Eight successful crossings! That's a 1-in-256 run.</span>";
+    } else if (game.status === "lost") {
+      message.innerHTML = `<strong>💥 The stone broke!</strong><span>You crossed ${game.step} ${game.step === 1 ? "pair" : "pairs"} before falling.</span>`;
+    } else {
+      message.innerHTML = `<strong>${game.step === 0 ? "Choose your first stone" : `Nice! Choose pair ${game.step + 1}.`}</strong><span>Tap the upper or lower highlighted stone.</span>`;
+    }
+  }
+
+  restart.addEventListener("click", () => { attempt += 1; start(); });
+  start();
+})();
+</script>
+</body>
+</html>
