@@ -1,0 +1,24 @@
+name: Validate game and probability engine
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check src/game-core.js
+          node --check src/app.js
+      - name: Test gameplay engine
+        run: node --test tests/game-core.test.cjs
+      - name: Validate precomputed probability tables
+        run: node scripts/validate_tables.mjs
