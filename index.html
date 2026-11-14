@@ -65,10 +65,14 @@ button:disabled{opacity:.45;cursor:default}
 .dialog h2{margin:0 0 8px;font-size:1.3rem}
 .dialog p{line-height:1.5;color:#53727f}
 .dialog .actions{margin-top:18px}
-.auto-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
-.auto-cell{background:#f2f8fa;padding:11px;border-radius:10px}
-.auto-cell strong{display:block;font-size:1.2rem}
-.auto-cell span{font-size:.76rem;color:#657e87}
+.auto-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,auto));grid-auto-flow:column;gap:6px;margin-top:12px}
+.auto-cell{background:#f2f8fa;padding:7px 10px;border-radius:9px;display:flex;align-items:center;gap:9px;min-width:0}
+.auto-cell strong{font-size:.82rem;font-weight:750}
+.auto-cell span{font-size:.72rem;color:#657e87;min-width:18px}
+.auto-cell.special{background:#eaf8f0}
+.auto-cell.set-skin{background:#fff3dc}
+.spending-note{font-size:.72rem;color:#69838d;line-height:1.45;margin:12px 0 0}
+@media(max-width:360px){.auto-cell{padding:7px 5px;gap:4px}.auto-cell strong{font-size:.74rem}}
 .hint{margin:8px 0 0;text-align:center;color:#7b9199;font-size:.76rem}
 footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
 [hidden]{display:none!important}
@@ -90,10 +94,10 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
     <button type="button" class="pack" data-pack="630">+630</button>
     <button type="button" class="pack" data-infinite="true" aria-pressed="false">∞</button>
   </div>
-  <div class="wallet"><span id="wallet-label">Available tokens</span><strong id="wallet">0</strong></div>
+  <div class="wallet"><span id="wallet-label">Remaining tokens</span><strong id="wallet">0</strong></div>
 </section>
 <section class="panel" aria-label="Game">
-  <div class="game-top"><span id="progress">0 / 8 steps</span><span id="run-counter">0 attempts completed</span></div>
+  <div class="game-top"><span id="progress">0 / 8 steps</span><span id="run-counter">0 tokens used</span></div>
   <div id="world" class="world" role="group" aria-label="Stepping Stones board">
     <div id="bridge" class="bridge" aria-label="Two rows of eight stones"></div>
   </div>
@@ -103,24 +107,25 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
   </div>
   <p class="hint">Each attempt costs one token. All rewards are cumulative.</p>
 </section>
-<section class="panel" aria-label="Bank">
-  <div class="section-heading"><h2>🏦 Your Bank</h2><span class="small">Accumulated winnings</span></div>
+<section class="panel" aria-label="Rewards">
+  <div class="section-heading"><h2>🎁 Your Rewards</h2><span class="small">Accumulated winnings</span></div>
   <div class="bank-grid">
     <div class="bank-item"><span>🔨 Hammers</span><strong id="hammers">0</strong></div>
     <div class="bank-item"><span>🪙 Coins</span><strong id="coins">0</strong></div>
-    <div class="bank-item"><span>👑 Basic head skins</span><strong id="basic">0</strong></div>
+    <div class="bank-item"><span>👑 +1% Skin</span><strong id="basic">0</strong></div>
     <div class="bank-item"><span>💎 Set skins</span><strong id="set">0</strong></div>
   </div>
   <div class="bank-footer">
-    <div class="small"><span id="bank-attempts">0 attempts completed</span><br><span id="bank-steps">0 successful steps</span></div>
+    <div class="small"><span id="bank-attempts">0 tokens used</span><br><span id="bank-steps">Average steps per token: 0.00</span><br><span id="estimated-spending">Estimated spending: $0.00</span></div>
     <button id="reset-all" type="button" class="action danger">Reset All</button>
   </div>
+  <p class="spending-note">Spending assumes every token costs $99/630 tokens ≈ $0.1571 per token.</p>
 </section>
 <section class="panel" aria-label="Statistics">
   <div class="section-heading"><h2>📊 Run statistics</h2><span class="small">Lifetime record</span></div>
   <div class="stats-grid">
-    <div class="stat"><strong id="total-spent">0</strong><span>Tokens spent</span></div>
-    <div class="stat"><strong id="total-steps">0</strong><span>Successful steps</span></div>
+    <div class="stat"><strong id="total-spent">0</strong><span>Tokens used</span></div>
+    <div class="stat"><strong id="total-steps">0.00</strong><span>Average steps per token</span></div>
     <div class="stat"><strong id="total-wins">0</strong><span>8-step wins</span></div>
   </div>
   <div class="small" style="margin-top:15px">How far did your attempts get?</div>
@@ -131,8 +136,8 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
 </main>
 <div id="auto-dialog" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="auto-title">
   <div class="dialog">
-    <h2 id="auto-title">20-run summary</h2>
-    <p id="auto-description"></p>
+    <h2 id="auto-title">Auto-Run Results (20 runs)</h2>
+    <p id="auto-description" class="small"></p>
     <div class="auto-grid" id="auto-stats"></div>
     <div class="actions"><button type="button" class="action" id="auto-close">Continue</button></div>
   </div>
