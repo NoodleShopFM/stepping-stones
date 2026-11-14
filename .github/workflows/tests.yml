@@ -18,7 +18,8 @@ jobs:
         run: |
           node --check src/game-core.js
           node --check src/app.js
+          node --check src/luck.js
       - name: Test gameplay engine
-        run: node --test tests/game-core.test.cjs
+        run: node --test tests/*.test.cjs
       - name: Validate precomputed probability tables
         run: node scripts/validate_tables.mjs
