@@ -1,55 +1,50 @@
 # Stepping Stones Simulator
 
-A fan-made browser simulation of the **Stepping Stones** minigame in *Forge Master*.
+An unofficial, noncommercial browser simulator of the **Stepping Stones** minigame in *Forge Master*.
 
 ## Play
 
-Open `index.html` in a modern browser, or enable GitHub Pages in **Settings → Pages → Deploy from a branch → main → /(root)**.
+**[Play Stepping Stones](https://noodleshopfm.github.io/stepping-stones/)**
 
-## Phase 1 — Gameplay, wallets, and banking
+## Features
 
-- Eight pairs of stones, each selected with independent 50% survival probability.\n- Sixteen independently randomized cosmetic tile variants (three supplied game sprites), fixed throughout each run and refreshed for new bridges.
-- Cumulative milestone rewards: hammers, coins, basic head skins, and set skins.
-- Token packs: 8, 42, 150, and 630; buying another pack adds to the balance.
-- Unlimited mode toggles without resetting winnings or the stored wallet.
-- Tap a completed bridge to restart when tokens are available.
-- Auto ×20 generates twenty independent runs and reveals results in a 20-row modal at 40 ms per row without replaying the board.
-- Your Rewards displays actual cumulative totals and percentage of expected rewards for completed attempts (three significant figures). The outcome histogram and progress persist in browser localStorage.
-- Reset All requires confirmation and erases wallet, outcomes, and winnings.
-- No build step, backend, or external runtime dependencies.
+- Eight pairs of stones, with an independent 50% chance of success for each choice. Crossing all eight has probability **1/256**.
+- Three cosmetic tile variants, independently randomized across all 16 stones for each new path.
+- Token packs of 8, 42, 150, and 630, plus unlimited play.
+- Cumulative rewards: hammers, coins, +1% skins, and set skins.
+- **Your Rewards** shows actual totals alongside percentages of the theoretical expected rewards per completed attempt.
+- **Auto ×20** simulates 20 attempts and quickly reveals their outcomes in a results table, without animating the path.
+- A successful-steps distribution, run statistics, and a histogram of completed attempts.
+- Progress saved locally in the browser, with a confirmation-protected **Reset All** option.
 
-**Accounting details:** An attempt spends one token on its first stone selection, regardless of outcome; milestones are paid cumulatively once when the attempt ends. Autoplay spends 20 tokens in one transaction, saves its results before replaying them, and cannot run with an active manual attempt.
+## How It Works
 
+Each attempt uses one token when its first stone is selected. Rewards are awarded when that attempt finishes. Auto ×20 deducts 20 tokens and saves all outcomes before revealing the results; it cannot start during an unfinished manual attempt.
 
-The chance of successfully crossing all eight pairs is `(1/2)^8 = 1/256`.
+The **% of Expected** calculation compares actual rewards with the theoretical mean for the number of completed attempts. The successful-steps chart uses precomputed distributions for 1–630 completed attempts and an approximation for larger sessions.
 
-## Precomputed probability engine
+## Development
 
-Exact step-total distributions for **1–630 attempts** have been computed and validated offline, then stored as small static binary chunks in `data/`. The cumulative successful-step chart loads only the relevant binary chunk and plots the theoretical distribution with the player's observed total. The chart remains neutral and does not display subjective luck categories. Sessions above 630 completed attempts use a second-order Edgeworth approximation; its extreme tails are not guaranteed to be accurate.
+The simulator is a static site with no backend or build step. The probability tables are generated offline; visitors do not need to run the generation scripts.
 
-- [Mathematical model, storage format, validation results, and approximation benchmarks](docs/probability-engine.md)
-- Regenerate: `node scripts/generate_tables.mjs`
-- Validate: `node scripts/validate_tables.mjs`
-- Compare large-session approximations: `node scripts/benchmark_approximations.mjs`
+- [Probability engine: mathematical model, storage format, and validation](docs/probability-engine.md)
+- Regenerate step distributions: `node scripts/generate_tables.mjs`
+- Validate probability tables: `node scripts/validate_tables.mjs`
+- Benchmark approximations: `node scripts/benchmark_approximations.mjs`
 
-All three scripts use Node.js without external dependencies. Visitors won't run them.
-
-## Roadmap
-
-- **Phase 2:** Tile sprite variants integrated; next replace the background, character animation, and camera behavior.
-- **Next Phase 1 milestone:** Review the cumulative-step plot and add +1% Skin and Set Skin probability distributions if the visual design works.\n- **Phase 3:** Add additional analytics, configuration, and other enhancements.
-
-## Disclaimer
-
-This is an unofficial fan-made tool, not affiliated with or endorsed by the developers of *Forge Master*. Forge Master and its game assets belong to their respective owners. Tile graphics are from *Forge Master* and are used for this noncommercial fan project with community-developer permission. The simulator is not affiliated with or endorsed by Lessmore.
-
-A license for this project's original code has not yet been selected. Any future license for the code will not cover third-party game artwork or assets.
-
-## Tests
+Run the automated tests with:
 
 ```sh
 node --test tests/*.test.cjs
 node scripts/validate_tables.mjs
 ```
 
-GitHub Actions also runs both test suites on pushes and pull requests.
+GitHub Actions also runs validation on pushes and pull requests.
+
+## Disclaimer
+
+This is an unofficial, noncommercial fan project and is **not affiliated with or endorsed by Lessmore** or the developers of *Forge Master*.
+
+*Forge Master* and its game artwork belong to their respective rights holders. Game graphics are used in this fan project with permission communicated by a community developer; that permission should not be understood as a formal license from the rights holder.
+
+No license has yet been selected for this project's original code. Any future code license would not extend to third-party game artwork.
