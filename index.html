@@ -41,6 +41,7 @@ button:disabled{opacity:.45;cursor:default}
 .message strong{display:block;font-size:1.04rem}
 .message span{display:block;color:#5f7d87;font-size:.86rem;margin-top:4px}
 .actions{display:flex;gap:9px}
+.game-actions{margin-top:14px}
 .action{flex:1;border:0;border-radius:12px;padding:13px;background:#1879ab;color:#fff;font-weight:800}
 .action.secondary{background:#ecf6fb;color:#176587;border:1px solid #b3d9e7}
 .action.danger{background:#fff4f3;color:#b83e3a;border:1px solid #f0cbc9;padding:9px 12px;flex:initial;font-size:.82rem}
@@ -114,7 +115,7 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
     <div id="bridge" class="bridge" aria-label="Two rows of eight stones"></div>
   </div>
   <div id="message" class="message" aria-live="polite"><strong>Choose a token pack to begin.</strong></div>
-  <div class="actions">
+  <div class="actions game-actions">
     <button id="auto" class="action" type="button">▶ Auto ×20</button>
   </div>
   <p class="hint">Each attempt costs one token. All rewards are cumulative.</p>
