@@ -13,8 +13,8 @@ Open `index.html` in a modern browser, or enable GitHub Pages in **Settings → 
 - Token packs: 8, 42, 150, and 630; buying another pack adds to the balance.
 - Unlimited mode toggles without resetting winnings or the stored wallet.
 - Tap a completed bridge to restart when tokens are available.
-- Auto ×20 generates twenty independent runs and briefly replays each path.
-- The Bank and outcome histogram retain progress in browser localStorage.
+- Auto ×20 generates twenty independent runs and reveals results in a 20-row modal at 40 ms per row without replaying the board.
+- Your Rewards displays actual cumulative totals and percentage of expected rewards for completed attempts (three significant figures). The outcome histogram and progress persist in browser localStorage.
 - Reset All requires confirmation and erases wallet, outcomes, and winnings.
 - No build step, backend, or external runtime dependencies.
 
@@ -25,7 +25,7 @@ The chance of successfully crossing all eight pairs is `(1/2)^8 = 1/256`.
 
 ## Precomputed probability engine
 
-Exact step-total distributions for **1–630 attempts** have been computed and validated offline, then stored as small static binary chunks in `data/`. The cumulative successful-step luck chart loads only the relevant binary chunk and plots the theoretical distribution with the player's observed total. It uses a mid-distribution percentile for discrete outcomes and the five agreed luck categories. Sessions above 630 completed attempts use a second-order Edgeworth approximation; its extreme tails are not guaranteed to be accurate.
+Exact step-total distributions for **1–630 attempts** have been computed and validated offline, then stored as small static binary chunks in `data/`. The cumulative successful-step chart loads only the relevant binary chunk and plots the theoretical distribution with the player's observed total. The chart remains neutral and does not display subjective luck categories. Sessions above 630 completed attempts use a second-order Edgeworth approximation; its extreme tails are not guaranteed to be accurate.
 
 - [Mathematical model, storage format, validation results, and approximation benchmarks](docs/probability-engine.md)
 - Regenerate: `node scripts/generate_tables.mjs`
