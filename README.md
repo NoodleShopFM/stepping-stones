@@ -8,7 +8,7 @@ Open `index.html` in a modern browser, or enable GitHub Pages in **Settings → 
 
 ## Phase 1 — Gameplay, wallets, and banking
 
-- Eight pairs of stones, each selected with independent 50% survival probability.
+- Eight pairs of stones, each selected with independent 50% survival probability.\n- Sixteen independently randomized cosmetic tile variants (three supplied game sprites), fixed throughout each run and refreshed for new bridges.
 - Cumulative milestone rewards: hammers, coins, basic head skins, and set skins.
 - Token packs: 8, 42, 150, and 630; buying another pack adds to the balance.
 - Unlimited mode toggles without resetting winnings or the stored wallet.
@@ -36,12 +36,12 @@ All three scripts use Node.js without external dependencies. Visitors won't run 
 
 ## Roadmap
 
-- **Phase 2:** Replace placeholder graphics with faithful game visuals, animation, and camera behavior.
+- **Phase 2:** Tile sprite variants integrated; next replace the background, character animation, and camera behavior.
 - **Next Phase 1 milestone:** Review the cumulative-step plot and add +1% Skin and Set Skin probability distributions if the visual design works.\n- **Phase 3:** Add additional analytics, configuration, and other enhancements.
 
 ## Disclaimer
 
-This is an unofficial fan-made tool, not affiliated with or endorsed by the developers of *Forge Master*. Forge Master and its game assets belong to their respective owners. No third-party game assets are included in Phase 1.
+This is an unofficial fan-made tool, not affiliated with or endorsed by the developers of *Forge Master*. Forge Master and its game assets belong to their respective owners. Tile graphics are from *Forge Master* and are used for this noncommercial fan project with community-developer permission. The simulator is not affiliated with or endorsed by Lessmore.
 
 A license for this project's original code has not yet been selected. Any future license for the code will not cover third-party game artwork or assets.
 
