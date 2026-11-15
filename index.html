@@ -29,11 +29,11 @@ button:disabled{opacity:.45;cursor:default}
 .world{border-radius:15px;overflow:hidden;background:linear-gradient(#83def0,#b7f1f9);min-height:clamp(195px,35vw,260px);display:flex;align-items:center;justify-content:center;padding:clamp(11px,2.8vw,24px) 9px;position:relative}
 .bridge{width:100%;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(3px,1.1vw,8px)}
 .pair{min-width:0;display:flex;flex-direction:column;gap:clamp(8px,2.8vw,17px)}
-.stone{width:100%;min-width:0;aspect-ratio:1/1.04;border:1.5px solid #2892a4;box-shadow:0 5px 0 #288d9a;border-radius:clamp(4px,1.6vw,11px);background:#65cfd8;display:grid;place-items:center;color:#fff;font-size:clamp(12px,2.8vw,21px);font-weight:850;padding:0;transition:background .13s,opacity .13s,transform .13s}
+.stone{width:100%;min-width:0;aspect-ratio:1;border:0;box-shadow:none;border-radius:0;background-color:transparent;background-size:100% 100%;background-position:center;background-repeat:no-repeat;display:grid;place-items:center;color:#fff;font-size:clamp(12px,2.8vw,21px);font-weight:850;padding:0;transition:filter .13s,opacity .13s,transform .13s;position:relative}
 .stone:disabled{opacity:1}
-.stone.current{background:#27d182;border-color:#168654;box-shadow:0 5px 0 #167b52}
-.stone.safe{background:#18c878;border-color:#158e57;box-shadow:0 5px 0 #178557}
-.stone.failed{background:#ed6964;border-color:#ae3d40;box-shadow:none;transform:rotate(-12deg) scale(.82)}
+.stone.current{filter:drop-shadow(0 0 5px #fff7b4)}
+.stone.safe{filter:brightness(1.08)}
+.stone.failed{filter:grayscale(.75) brightness(.7);transform:rotate(-12deg) scale(.82);opacity:.7}
 .stone:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .stone .foot{font-size:clamp(11px,2.3vw,18px)}
 .world.finished{cursor:pointer}
