@@ -16,6 +16,9 @@ header p{color:#647b84;font-size:.87rem;margin:0}
 .panel{background:#fff;border-radius:20px;padding:clamp(14px,3.5vw,22px);box-shadow:0 5px 25px #0f516214}
 .section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
 .section-heading h2{font-size:1.11rem;margin:0}
+.game-icon{width:1.4em;height:1.4em;object-fit:contain;vertical-align:-.28em;margin-right:.35em;flex:none}
+.reward-name{display:flex!important;align-items:center;gap:6px}
+.reward-name .game-icon{width:23px;height:23px;margin-right:0;vertical-align:middle}
 .small{color:#69838d;font-size:.79rem}
 .packs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
 button{font:inherit;touch-action:manipulation;cursor:pointer}
@@ -93,13 +96,13 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
 </style>
 <script src="src/game-core.js" defer></script>
 <script src="src/luck.js" defer></script>
-<script src="src/app.js?v=20261115c" defer></script>
+<script src="src/app.js?v=20261115d" defer></script>
 </head>
 <body>
 <main>
 <header><h1>Stepping Stones</h1><p>A remarkably rigorous way to fall into the void</p></header>
 <section class="panel" aria-label="Tokens">
-  <div class="section-heading"><h2>🎟️ Tokens</h2><span class="small">Choose a pack or unlimited play</span></div>
+  <div class="section-heading"><h2>Tokens</h2><span class="small">Choose a pack or unlimited play</span></div>
   <div class="packs" id="packs">
     <button type="button" class="pack" data-pack="8">+8</button>
     <button type="button" class="pack" data-pack="42">+42</button>
@@ -118,15 +121,15 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
   <div class="actions game-actions">
     <button id="auto" class="action" type="button">▶ Auto ×20</button>
   </div>
-  <p class="hint">Each attempt costs one token. All rewards are cumulative.</p>
+  
 </section>
 <section class="panel" aria-label="Rewards">
-  <div class="section-heading"><h2>🎁 Your Rewards</h2><span class="small">Accumulated winnings</span></div>
+  <div class="section-heading"><h2>Your Rewards</h2><span class="small">Accumulated winnings</span></div>
   <div class="bank-grid">
-    <div class="reward-row"><div><span class="reward-name">🔨 Hammers</span><strong class="reward-total" id="hammers">0</strong></div><div class="reward-efficiency"><strong id="hammers-efficiency">—</strong><span>of Expected</span></div></div>
-    <div class="reward-row"><div><span class="reward-name">🪙 Coins</span><strong class="reward-total" id="coins">0</strong></div><div class="reward-efficiency"><strong id="coins-efficiency">—</strong><span>of Expected</span></div></div>
-    <div class="reward-row"><div><span class="reward-name">👑 +1% Skin</span><strong class="reward-total" id="basic">0</strong></div><div class="reward-efficiency"><strong id="basic-efficiency">—</strong><span>of Expected</span></div></div>
-    <div class="reward-row"><div><span class="reward-name">💎 Set skins</span><strong class="reward-total" id="set">0</strong></div><div class="reward-efficiency"><strong id="set-efficiency">—</strong><span>of Expected</span></div></div>
+    <div class="reward-row"><div><span class="reward-name">Hammers</span><strong class="reward-total" id="hammers">0</strong></div><div class="reward-efficiency"><strong id="hammers-efficiency">—</strong><span>of Expected</span></div></div>
+    <div class="reward-row"><div><span class="reward-name">Coins</span><strong class="reward-total" id="coins">0</strong></div><div class="reward-efficiency"><strong id="coins-efficiency">—</strong><span>of Expected</span></div></div>
+    <div class="reward-row"><div><span class="reward-name">+1% Skins</span><strong class="reward-total" id="basic">0</strong></div><div class="reward-efficiency"><strong id="basic-efficiency">—</strong><span>of Expected</span></div></div>
+    <div class="reward-row"><div><span class="reward-name">Set skins</span><strong class="reward-total" id="set">0</strong></div><div class="reward-efficiency"><strong id="set-efficiency">—</strong><span>of Expected</span></div></div>
   </div>
   <div class="bank-footer">
     <div class="small"><span id="bank-attempts">0 tokens used</span><br><span id="bank-steps">Average steps per token: 0.00</span><br><span id="estimated-spending">Estimated spending: $0.00</span></div>
@@ -135,14 +138,14 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
   <p class="spending-note">Spending assumes every token costs $99/630 tokens ≈ $0.1571 per token.</p>
 </section>
 <section class="panel" aria-label="Luck dashboard">
-  <div class="section-heading"><h2>📊 Total Successful Steps</h2><span class="small">Total successful steps</span></div>
-  <div id="luck-placeholder" class="luck-placeholder">Play a few rounds to see how your luck compares.</div>
+  <div class="section-heading"><h2>📊 Successful Steps</h2><span class="small">Total successful steps</span></div>
+  <div id="luck-placeholder" class="luck-placeholder">Play the game to begin tracking.</div>
   <div id="luck-content" hidden>
     
     <svg id="luck-plot" class="luck-plot" viewBox="0 0 600 220" role="img" aria-label="Theoretical distribution of cumulative successful steps, with observed total marked"></svg>
-    <div class="luck-legend"><span><span class="luck-key"></span>Expected distribution</span><span><span class="luck-key actual"></span>Your result</span></div>
+    <div class="luck-legend"><span><span class="luck-key"></span>Expected steps</span><span><span class="luck-key actual"></span>Your result</span></div>
     <div class="luck-meta"><span id="luck-observed"></span><span id="luck-expected"></span></div>
-    <p id="luck-method" class="hint"></p>
+    
   </div>
 </section>
 <section class="panel" aria-label="Statistics">
