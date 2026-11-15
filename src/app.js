@@ -56,19 +56,15 @@
         button.style.backgroundImage = `url("assets/tiles/tile_${variant}.png")`;
         button.setAttribute("aria-label", `Pair ${i + 1}, ${side} stone`);
         const selected = result?.side === side;
-        if (result) {
-          button.classList.add(selected && !result.safe ? "failed" : "safe");
-          if (selected) {
-            button.textContent = result.safe ? "✓" : "";
-            if (result.safe && i === attempt.step - 1) {
-              button.textContent = "✓";
-              button.setAttribute("aria-label", `Player at pair ${i + 1}, ${side}`);
-            }
+        if(result){
+          if(selected && !result.safe){
+            button.classList.add("failed");
+            button.setAttribute("aria-label",`Broken stone at pair ${i+1}, ${side}`);
+          }else if(selected && result.safe){
+            button.classList.add("safe");
+            button.textContent="✓";
+            button.setAttribute("aria-label",`Successful stone at pair ${i+1}, ${side}`);
           }
-        } else if (!isReplay && attempt.status === "active" && i === attempt.step) {
-          button.classList.add("current");
-        } else if (!isReplay && attempt.status === "ready" && core.canStart(state) && i === 0) {
-          button.classList.add("current");
         }
         const finished = attempt.status === "won" || attempt.status === "lost";
         button.disabled = isReplay || replaying || (finished && !core.canStart(state))
@@ -220,13 +216,13 @@
     const a = state.current;
     elements.progress.textContent = `${a.step} / 8 steps`;
     if (a.status === "active") {
-      say(`Choose pair ${a.step + 1}`, "Tap the upper or lower highlighted stone.");
+      say("", "");
     } else if (a.status === "won") {
       say("🎉 All eight stones crossed!", core.canStart(state) ? "Tap anywhere in the bridge to try again." : "No tokens left. Add a pack to continue.");
     } else if (a.status === "lost") {
       say("💥 The stone broke!", core.canStart(state) ? `${a.step} successful steps. Tap anywhere in the bridge to restart.` : "No tokens left. Add a pack to continue.");
     } else if (core.canStart(state)) {
-      say("Choose your first stone", "Each selected stone has a 50% chance of breaking.");
+      say("", "");
     } else {
       say("Out of tokens", "Choose a pack or enable unlimited mode to play.");
     }
