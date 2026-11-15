@@ -113,7 +113,7 @@
     lastLuckKey=key;
     const request=++luckRequest;
     placeholder.hidden=false;
-    placeholder.textContent="Loading your luck distribution…";
+    placeholder.textContent="Loading step distribution…";
     content.hidden=true;
     try{
       const result=await globalThis.StonesLuck.calculate(n,observed);
@@ -150,7 +150,7 @@
 
       $("#luck-observed").textContent=`${fmt(observed)} successful steps`;
       $("#luck-expected").textContent=`${mean.toFixed(1)} expected after ${fmt(n)} runs`;
-      $("#luck-method").textContent=result.approximate?"Large-session approximation (over 630 runs)":"Precomputed exact distribution (stored Float32)";
+      
       placeholder.hidden=true;
       content.hidden=false;
     }catch(error){
