@@ -222,7 +222,7 @@
     elements.message.hidden=quiet;
     if(quiet)return;
     if(a.status==="won"){
-      say("🎉 All eight stones crossed!",core.canStart(state)?"Tap anywhere in the bridge to try again.":"No tokens left. Add a pack to continue.");
+      say("🎉 All eight stones crossed!",core.canStart(state)?"Tap anywhere on the path to restart.":"No tokens left. Add a pack to continue.");
     }else if(a.status==="lost"){
       say(`Reached Tile ${a.step}`,core.canStart(state)?"Tap anywhere on the path to restart.":"No tokens left. Add a pack to continue.");
     }else{
