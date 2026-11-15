@@ -13,7 +13,8 @@
     {hammers:224,coins:5100,basic:1,set:1}
   ];
   function emptyRewards(){return {hammers:0,coins:0,basic:0,set:0};}
-  function currentAttempt(){return {status:"ready",step:0,choices:[],earned:emptyRewards()};}
+  function randomTiles(rng=Math.random){return Array.from({length:16},()=>Math.min(2,Math.floor(rng()*3)));}
+  function currentAttempt(rng=Math.random){return {status:"ready",step:0,choices:[],earned:emptyRewards(),tiles:randomTiles(rng)};}
   function freshState(){return {version:VERSION,wallet:0,unlimited:false,spent:0,completed:0,steps:0,bank:emptyRewards(),outcomeCounts:Array(9).fill(0),current:currentAttempt()};}
   function validCount(x){return Number.isSafeInteger(x)&&x>=0;}
   function rewardForSteps(steps){
@@ -78,7 +79,7 @@
       if(!safe)break;
     }
     const steps=choices.filter(c=>c.safe).length;
-    return {steps,choices,won:steps===8,reward:rewardForSteps(steps)};
+    return {steps,choices,won:steps===8,reward:rewardForSteps(steps),tiles:randomTiles(rng)};
   }
   function autoTwenty(state,rng=Math.random){
     if(state.current.status==="active")return {ok:false,reason:"Finish the current attempt first"};
@@ -101,6 +102,7 @@
     state.current=currentAttempt();
     return summary;
   }
+  function validTiles(tiles){return Array.isArray(tiles)&&tiles.length===16&&tiles.every(v=>Number.isInteger(v)&&v>=0&&v<=2);}
   function restoreState(raw){
     if(!raw||raw.version!==VERSION||!Array.isArray(raw.outcomeCounts)||raw.outcomeCounts.length!==9)return freshState();
     if(!raw.outcomeCounts.every(validCount)||!validCount(raw.wallet)||!validCount(raw.spent))return freshState();
@@ -124,13 +126,14 @@
         if(c.safe)steps++;else failed=true;
       }
       if(valid&&choices.length){
-        s.current={status:failed?"lost":steps===8?"won":"active",step:steps,choices:choices.map(c=>({side:c.side,safe:c.safe})),earned:failed||steps===8?rewardForSteps(steps):emptyRewards()};
+        s.current={status:failed?"lost":steps===8?"won":"active",step:steps,choices:choices.map(c=>({side:c.side,safe:c.safe})),earned:failed||steps===8?rewardForSteps(steps):emptyRewards(),tiles:validTiles(raw.current.tiles)?[...raw.current.tiles]:randomTiles()};
       }
     }
     if(s.spent<s.completed+Number(s.current.status==="active"))return freshState();
+    if(s.current.status==="ready"&&validTiles(raw.current?.tiles))s.current.tiles=[...raw.current.tiles];
     return s;
   }
-  const api={STEPS,PACKS,PAYOUT,freshState,rewardForSteps,canStart,addTokens,toggleInfinite,restart,choose,simulate,autoTwenty,restoreState};
+  const api={STEPS,PACKS,PAYOUT,randomTiles,freshState,rewardForSteps,canStart,addTokens,toggleInfinite,restart,choose,simulate,autoTwenty,restoreState};
   if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if(typeof globalThis!=="undefined")globalThis.StonesCore=api;
   return api;
