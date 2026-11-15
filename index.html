@@ -89,7 +89,11 @@ button:disabled{opacity:.45;cursor:default}
 .spending-note{font-size:.72rem;color:#69838d;line-height:1.45;margin:12px 0 0}
 @media(max-width:360px){.auto-cell{padding:7px 5px;gap:4px}.auto-cell strong{font-size:.74rem}}
 .hint{margin:8px 0 0;text-align:center;color:#7b9199;font-size:.76rem}
-footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
+footer{text-align:center;font-size:.74rem;color:#6e8790;padding:8px 4px 4px;display:grid;gap:5px}
+footer .creator-credit{font-size:.9rem;color:#355968;font-weight:600}
+footer .creator-credit a{color:#176c92;text-decoration:underline;text-underline-offset:2px}
+footer .creator-credit a:hover{color:#104b68}
+footer .disclaimer{font-size:.72rem;line-height:1.5}
 [hidden]{display:none!important}
 @media(max-width:410px){.panel{padding:13px}.bank-item{padding:11px}.pack{padding:11px 2px}.world{padding:12px 5px;min-height:190px}.pair{gap:9px}.bank-footer{align-items:flex-start}.bank-footer .small{font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){.stone{transition:none}}
@@ -159,7 +163,7 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
   <div id="histogram" class="histogram" aria-label="Attempts by number of successful steps"></div>
 
 </section>
-<footer>Unofficial, noncommercial Forge Master fan simulator · Not affiliated with Lessmore · NoodleShopFM</footer>
+<footer><div class="creator-credit">Made by <a href="https://github.com/NoodleShopFM" target="_blank" rel="noopener noreferrer">NoodleDoodle</a> 🍜</div><div class="disclaimer">Unofficial, noncommercial Forge Master fan simulator · Not affiliated with Lessmore</div></footer>
 </main>
 <div id="auto-dialog" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="auto-title">
   <div class="dialog">
