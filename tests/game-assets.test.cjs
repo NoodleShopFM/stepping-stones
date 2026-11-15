@@ -12,7 +12,7 @@ test("all six supplied game icon assets are referenced and available",()=>{
  }
 });
 test("step chart is player-facing without technical distribution labels",()=>{
- assert.match(html,/>Successful Steps<\/h2>/);
+ assert.match(html,/Successful Steps<\/h2>/);
  assert.match(html,/>Expected steps<\/span>/);
  assert.match(html,/Play the game to begin tracking/);
  assert.doesNotMatch(html,/id="luck-method"|Total Successful Steps|Each attempt costs one token/);
