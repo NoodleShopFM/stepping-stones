@@ -59,9 +59,9 @@
         if (result) {
           button.classList.add(selected && !result.safe ? "failed" : "safe");
           if (selected) {
-            button.textContent = result.safe ? "✓" : "✕";
+            button.textContent = result.safe ? "✓" : "";
             if (result.safe && i === attempt.step - 1) {
-              button.textContent = "👣";
+              button.textContent = "✓";
               button.setAttribute("aria-label", `Player at pair ${i + 1}, ${side}`);
             }
           }
@@ -165,30 +165,12 @@
       lastLuckKey="";
     }
   }
-  let rewardRequest=0;
-  let lastRewardKey="";
-  async function renderRewardChances(){
+  function renderRewardEfficiency(){
     const n=state.completed;
-    const key=`${n}:${state.bank.hammers}:${state.bank.coins}:${state.bank.basic}:${state.bank.set}`;
-    if(key===lastRewardKey)return;
-    lastRewardKey=key;
-    const request=++rewardRequest;
-    const metrics=["hammers","coins","basic","set"];
-    if(n===0){
-      for(const metric of metrics)$("#"+metric+"-chance").textContent="100%";
-      return;
+    for(const metric of ["hammers","coins","basic","set"]){
+      const value=globalThis.StonesEfficiency.percentOfExpected(metric,n,state.bank[metric]);
+      $("#"+metric+"-efficiency").textContent=globalThis.StonesEfficiency.formatPercent(value);
     }
-    for(const metric of metrics)$("#"+metric+"-chance").textContent="…";
-    const results=await Promise.all(metrics.map(async metric=>{
-      try{return await globalThis.StonesRewards.tail(metric,n,state.bank[metric]);}
-      catch(error){console.warn("Reward probability unavailable:",metric,error);return null;}
-    }));
-    if(request!==rewardRequest)return;
-    results.forEach((result,i)=>{
-      const el=$("#"+metrics[i]+"-chance");
-      el.textContent=result?globalThis.StonesRewards.formatPercent(result.probability):"—";
-      el.title=result?.approximate?"Approximate tail probability":"Probability of matching or exceeding this reward";
-    });
   }
   function renderStats() {
     $("#hammers").textContent = fmt(state.bank.hammers);
@@ -254,7 +236,7 @@
     showBoard();
     renderMessage();
     renderStats();
-    void renderRewardChances();
+    renderRewardEfficiency();
     void renderLuck();
   }
   elements.packs.addEventListener("click", (event) => {
@@ -282,51 +264,41 @@
     render();
   });
   async function autoPlay() {
-    if (replaying) return;
-    const result = core.autoTwenty(state);
-    if (!result.ok) return;
-    // Commit the results first. Refreshing during replay cannot duplicate the payout.
+    if(replaying)return;
+    const result=core.autoTwenty(state);
+    if(!result.ok)return;
+    // Save all 20 outcomes before the purely presentational table reveal.
     save();
-    replaying = true;
+    replaying=true;
     renderControls();
-    elements.autoDescription.textContent = "Results in play order";
+    elements.autoDescription.textContent="Results in play order";
     elements.autoStats.replaceChildren();
-    // Reserve all 20 slots before animation to prevent the modal resizing.
-    const resultRows = Array.from({length: 20}, (_, index) => {
-      const box = document.createElement("div");
-      box.className = "auto-cell";
-      box.setAttribute("aria-label", `Run ${index + 1}: pending`);
-      const number = document.createElement("span");
-      number.textContent = `${index + 1}.`;
-      const label = document.createElement("strong");
-      label.textContent = "—";
-      box.append(number, label);
+    const resultRows=Array.from({length:20},(_,index)=>{
+      const box=document.createElement("div");
+      box.className="auto-cell";
+      box.setAttribute("aria-label",`Run ${index+1}: pending`);
+      const number=document.createElement("span");
+      number.textContent=`${index+1}.`;
+      const label=document.createElement("strong");
+      label.textContent="—";
+      box.append(number,label);
       elements.autoStats.append(box);
-      return {box, label};
+      return {box,label};
     });
-    elements.dialog.hidden = false;
-    elements.autoClose.disabled = true;
-    for (let i = 0; i < result.runs.length; i++) {
-      const run = result.runs[i];
-      const pseudoAttempt = {
-        status: run.won ? "won" : "lost",
-        step: run.steps,
-        choices: run.choices,
-        tiles: run.tiles
-      };
-      elements.progress.textContent = `Auto-play ${i + 1} / 20`;
-      say(run.won ? "🎉 Full crossing!" : `${run.steps} successful steps`, "Simulating 20 independent attempts…");
-      showBoard(pseudoAttempt, true);
-      const {box, label} = resultRows[i];
-      label.textContent = resultLabel(run.steps);
-      box.setAttribute("aria-label", `Run ${i + 1}: ${label.textContent}`);
-      if (run.steps === 8) box.classList.add("set-skin");
-      else if (run.steps >= 6) box.classList.add("special");
-      await sleep(80);
+    elements.dialog.hidden=false;
+    elements.autoClose.disabled=true;
+    for(let i=0;i<result.runs.length;i++){
+      const run=result.runs[i];
+      const {box,label}=resultRows[i];
+      label.textContent=resultLabel(run.steps);
+      box.setAttribute("aria-label",`Run ${i+1}: ${label.textContent}`);
+      if(run.steps===8)box.classList.add("set-skin");
+      else if(run.steps>=6)box.classList.add("special");
+      await sleep(40);
     }
-    replaying = false;
+    replaying=false;
     render();
-    elements.autoClose.disabled = false;
+    elements.autoClose.disabled=false;
     elements.autoClose.focus();
   }
   elements.auto.addEventListener("click", autoPlay);
