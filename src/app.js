@@ -215,18 +215,18 @@
     elements.auto.textContent = replaying ? "Playing 20 runs…" : "▶ Auto ×20";
   }
   function renderMessage() {
-    const a = state.current;
-    elements.progress.textContent = `${a.step} / 8 steps`;
-    if (a.status === "active") {
-      say("", "");
-    } else if (a.status === "won") {
-      say("🎉 All eight stones crossed!", core.canStart(state) ? "Tap anywhere in the bridge to try again." : "No tokens left. Add a pack to continue.");
-    } else if (a.status === "lost") {
-      say("💥 The stone broke!", core.canStart(state) ? `${a.step} successful steps. Tap anywhere in the bridge to restart.` : "No tokens left. Add a pack to continue.");
-    } else if (core.canStart(state)) {
-      say("", "");
-    } else {
-      say("Out of tokens", "Choose a pack or enable unlimited mode to play.");
+    const a=state.current;
+    elements.progress.textContent=`${a.step} / 8 steps`;
+    // Gameplay needs no prompts: only show the outcome or out-of-tokens notice.
+    const quiet=a.status==="active" || (a.status==="ready" && core.canStart(state));
+    elements.message.hidden=quiet;
+    if(quiet)return;
+    if(a.status==="won"){
+      say("🎉 All eight stones crossed!",core.canStart(state)?"Tap anywhere in the bridge to try again.":"No tokens left. Add a pack to continue.");
+    }else if(a.status==="lost"){
+      say("💥 The stone broke!",core.canStart(state)?`${a.step} successful steps. Tap anywhere in the bridge to restart.`:"No tokens left. Add a pack to continue.");
+    }else{
+      say("Out of tokens","Choose a pack or enable unlimited mode to play.");
     }
   }
   function render() {
