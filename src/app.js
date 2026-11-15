@@ -51,6 +51,9 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "stone";
+        const tileIndex = i * 2 + (side === "bottom" ? 1 : 0);
+        const variant = attempt.tiles?.[tileIndex] ?? 0;
+        button.style.backgroundImage = `url("assets/tiles/tile_${variant}.png")`;
         button.setAttribute("aria-label", `Pair ${i + 1}, ${side} stone`);
         const selected = result?.side === side;
         if (result) {
@@ -308,7 +311,8 @@
       const pseudoAttempt = {
         status: run.won ? "won" : "lost",
         step: run.steps,
-        choices: run.choices
+        choices: run.choices,
+        tiles: run.tiles
       };
       elements.progress.textContent = `Auto-play ${i + 1} / 20`;
       say(run.won ? "🎉 Full crossing!" : `${run.steps} successful steps`, "Simulating 20 independent attempts…");
