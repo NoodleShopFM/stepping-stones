@@ -224,7 +224,7 @@
     if(a.status==="won"){
       say("🎉 All eight stones crossed!",core.canStart(state)?"Tap anywhere in the bridge to try again.":"No tokens left. Add a pack to continue.");
     }else if(a.status==="lost"){
-      say("💥 The stone broke!",core.canStart(state)?`${a.step} successful steps. Tap anywhere in the bridge to restart.`:"No tokens left. Add a pack to continue.");
+      say(`Reached Tile ${a.step}`,core.canStart(state)?"Tap anywhere on the path to restart.":"No tokens left. Add a pack to continue.");
     }else{
       say("Out of tokens","Choose a pack or enable unlimited mode to play.");
     }
