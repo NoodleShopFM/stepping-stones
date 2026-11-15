@@ -163,9 +163,11 @@
   }
   function renderRewardEfficiency(){
     const n=state.completed;
-    for(const metric of ["hammers","coins","basic","set"]){
-      const value=globalThis.StonesEfficiency.percentOfExpected(metric,n,state.bank[metric]);
-      $("#"+metric+"-efficiency").textContent=globalThis.StonesEfficiency.formatPercent(value);
+    const means={hammers:427/64,coins:3225/8,basic:1/64,set:1/256};
+    const formatter=new Intl.NumberFormat("en-US",{maximumSignificantDigits:3});
+    for(const metric of Object.keys(means)){
+      const value=n>0?100*state.bank[metric]/(n*means[metric]):null;
+      $("#"+metric+"-efficiency").textContent=value===null?"—":formatter.format(value)+"%";
     }
   }
   function renderStats() {
