@@ -31,7 +31,6 @@ button:disabled{opacity:.45;cursor:default}
 .pair{min-width:0;display:flex;flex-direction:column;gap:clamp(8px,2.8vw,17px)}
 .stone{width:100%;min-width:0;aspect-ratio:1;border:0;box-shadow:none;border-radius:0;background-color:transparent;background-size:100% 100%;background-position:center;background-repeat:no-repeat;display:grid;place-items:center;color:#fff;font-size:clamp(12px,2.8vw,21px);font-weight:850;padding:0;transition:filter .13s,opacity .13s,transform .13s;position:relative}
 .stone:disabled{opacity:1}
-.stone.current{filter:drop-shadow(0 0 5px #fff7b4)}
 .stone.safe{filter:brightness(1.08)}
 .stone.failed{filter:grayscale(.75) brightness(.7);transform:rotate(-12deg) scale(.82);opacity:.7}
 .stone:focus-visible{outline:3px solid #fff;outline-offset:3px}
@@ -93,8 +92,7 @@ footer{text-align:center;font-size:.74rem;color:#6e8790;padding:4px}
 </style>
 <script src="src/game-core.js" defer></script>
 <script src="src/luck.js" defer></script>
-<script src="src/reward-efficiency.js" defer></script>
-<script src="src/app.js" defer></script>
+<script src="src/app.js?v=20261115b" defer></script>
 </head>
 <body>
 <main>
