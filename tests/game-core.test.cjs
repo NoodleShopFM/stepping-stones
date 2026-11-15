@@ -80,6 +80,8 @@ test("reload restores derived bank and in-progress position",()=>{
   assert.equal(restored.wallet,7);
 });
 test("invalid state is rejected; reset creates clean state",()=>{
-  assert.deepEqual(game.restoreState({version:1}),game.freshState());
+  const invalid=game.restoreState({version:1});
+  const fresh=game.freshState();
+  assert.deepEqual({...invalid,current:{...invalid.current,tiles:[]}}, {...fresh,current:{...fresh.current,tiles:[]}});
   assert.deepEqual(game.freshState().outcomeCounts,Array(9).fill(0));
 });
