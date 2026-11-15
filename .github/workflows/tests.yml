@@ -20,6 +20,7 @@ jobs:
           node --check src/app.js
           node --check src/luck.js
           node --check src/reward-probabilities.js
+          node --check src/reward-efficiency.js
       - name: Test gameplay engine
         run: node --test tests/*.test.cjs
       - name: Validate precomputed probability tables
